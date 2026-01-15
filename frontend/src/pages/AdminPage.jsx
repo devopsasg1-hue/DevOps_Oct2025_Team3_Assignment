@@ -4,6 +4,7 @@ import axios from "axios";
 import Header from "../components/Header.jsx";
 
 
+
 const AdminPage = () => {
     const { user, isAdmin } = useAuth();
 
@@ -27,6 +28,8 @@ const AdminPage = () => {
     return (
         <>
             <Header/>
+
+
             <div className="simple-dashboard">
                 <div className="simple-content">
                     <div className="simple-welcome-card">
