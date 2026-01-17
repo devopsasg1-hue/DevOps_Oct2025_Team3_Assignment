@@ -32,48 +32,54 @@ export function DataTable<TData, TValue>({
     })
 
     return (
-        <div className="overflow-hidden rounded-md border border-gray-300 shadow-sm w-5/6 h-[550px]">
-            <Table className={undefined}>
-                <TableHeader className={undefined}>
-                    {table.getHeaderGroups().map((headerGroup) => (
-                        <TableRow key={headerGroup.id} className={undefined}>
-                            {headerGroup.headers.map((header) => {
-                                return (
-                                    <TableHead key={header.id} className={undefined}>
-                                        {header.isPlaceholder
-                                            ? null
-                                            : flexRender(
-                                                header.column.columnDef.header,
-                                                header.getContext()
-                                            )}
-                                    </TableHead>
-                                )
-                            })}
-                        </TableRow>
-                    ))}
-                </TableHeader>
-                <TableBody className={undefined}>
-                    {table.getRowModel().rows?.length ? (
-                        table.getRowModel().rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                data-state={row.getIsSelected() && "selected"} className={undefined}                            >
-                                {row.getVisibleCells().map((cell) => (
-                                    <TableCell key={cell.id} className={undefined}>
-                                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                    </TableCell>
-                                ))}
+        <div className="flex flex-col w-full h-full gap-4">
+            <div className="flex-2/3 flex col overflow-hidden rounded-md border border-gray-300 shadow-sm ">
+                <Table className={undefined}>
+                    <TableHeader className="sticky top-0 z-10 bg-background shadow-md">
+                        {table.getHeaderGroups().map((headerGroup) => (
+                            <TableRow key={headerGroup.id} className={undefined}>
+                                {headerGroup.headers.map((header) => {
+                                    return (
+                                        <TableHead key={header.id} className={undefined}>
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(
+                                                    header.column.columnDef.header,
+                                                    header.getContext()
+                                                )}
+                                        </TableHead>
+                                    )
+                                })}
                             </TableRow>
-                        ))
-                    ) : (
-                        <TableRow className={undefined}>
-                            <TableCell colSpan={columns.length} className="h-24 text-center">
-                                No results.
-                            </TableCell>
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+                        ))}
+                    </TableHeader>
+                    <TableBody className={undefined}>
+                        {table.getRowModel().rows?.length ? (
+                            table.getRowModel().rows.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    data-state={row.getIsSelected() && "selected"} className={undefined}                            >
+                                    {row.getVisibleCells().map((cell) => (
+                                        <TableCell key={cell.id} className={undefined}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow className={undefined}>
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    No results.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+            <div className="flex-1 text-sm text-muted-foreground">
+                {table.getSelectedRowModel().rows.length} of {}
+                {table.getRowModel().rows.length} rows selected
+            </div>
         </div>
     )
 }

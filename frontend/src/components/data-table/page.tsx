@@ -4,6 +4,15 @@ import {useEffect, useState} from "react";
 import {createColumnHelper} from "@tanstack/react-table";
 import axios from "axios";
 import {Checkbox} from "@/components/ui/checkbox";
+import {
+    DropdownMenu,
+    DropdownMenuContent, DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import {Button} from "@/components/ui/button";
+import {MoreVertical} from "lucide-react";
 
 
 
@@ -39,8 +48,43 @@ const columns = [
         cell:(info) => info.getValue(),
     }),
     columnHelper.accessor("created_at",{
-        header: () => <p>Create At</p>,
+        header: () => <p>Created At</p>,
         cell: (info) => info.getValue()
+    }),
+    columnHelper.display({
+        id:"more",
+        cell: ({row}) => {
+
+            const user = row.original; // Get the user object for this row
+
+            const handleDelete = () => {
+                console.log('Delete clicked for user:', user);
+                // Add your delete logic here
+            };
+
+            return (
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant={"ghost"} className={undefined}>
+                            <MoreVertical/>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent onCloseAutoFocus={(e: { preventDefault: () => any; })=> e.preventDefault()} className={undefined}>
+                        <DropdownMenuLabel className={undefined} inset={undefined}>
+                            Actions
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator className={undefined}/>
+                        <DropdownMenuItem
+                            onClick={handleDelete}
+
+                            className={undefined}
+                            inset={undefined}
+
+                        >Delete</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            )
+        }
     })
 ]
 
