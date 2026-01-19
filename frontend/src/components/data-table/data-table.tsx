@@ -167,13 +167,13 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 
-interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[]
+interface DataTableProps<TData> {
+    columns: ColumnDef<TData, any>[]
     data: TData[]
-    setData: React.Dispatch<React.SetStateAction<TData[]>>
+    setData: React.Dispatch<React.SetStateAction<User[]>>
 }
 
-export function DataTable<TData, TValue>({columns, data,setData}: DataTableProps<TData, TValue>) {
+export function DataTable<TData>({columns, data,setData}: DataTableProps<TData>) {
     const [sorting, setSorting] = useState<SortingState>([])
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
