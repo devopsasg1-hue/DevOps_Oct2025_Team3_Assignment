@@ -4,17 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8263c01d-8054-4d83-9cde-fee66d80c7ea" name="Changes" comment="starting popout form">
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/data-table/CreateUserForm.tsx" afterDir="false" />
+    <list default="true" id="8263c01d-8054-4d83-9cde-fee66d80c7ea" name="Changes" comment="Date formated">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/data-table/columns.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/data-table/columns.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/data-table/CreateUserForm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/data-table/CreateUserForm.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/data-table/data-table.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/data-table/data-table.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/data-table/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/data-table/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/lib/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/lib/utils.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/AdminPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/AdminPage.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +101,7 @@
       <updated>1768397800704</updated>
       <workItem from="1768397801854" duration="26705000" />
       <workItem from="1768626233336" duration="29592000" />
-      <workItem from="1768814139909" duration="1545000" />
+      <workItem from="1768814139909" duration="5342000" />
     </task>
     <task id="LOCAL-00001" summary="Add tailwind">
       <option name="closed" value="true" />
@@ -173,7 +167,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768658403295</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Date formated">
+      <option name="closed" value="true" />
+      <created>1768816022431</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1768816022431</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -187,6 +189,7 @@
     <MESSAGE value="update table accordingly" />
     <MESSAGE value="Finished search function" />
     <MESSAGE value="starting popout form" />
-    <option name="LAST_COMMIT_MESSAGE" value="starting popout form" />
+    <MESSAGE value="Date formated" />
+    <option name="LAST_COMMIT_MESSAGE" value="Date formated" />
   </component>
 </project>

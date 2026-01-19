@@ -17,7 +17,7 @@ import {MoreVertical} from "lucide-react";
 
 export default function DemoPage() {
 
-    const [Users, setUsers] = useState([])
+    const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -83,8 +83,8 @@ export default function DemoPage() {
                     console.log('Delete clicked for user:', user);
                     try {
                         await axios.delete(`${import.meta.env.VITE_API_URL}/delete_user/${user.userid}`);
-                        // @ts-ignore
-                        setUsers((prev) => prev.filter((u) => u.userid !== user.userid));
+
+                        setUsers((prev: User[]) => prev.filter((u) => u.userid !== user.userid));
                     } catch (error) {
                         console.error('Failed to delete user:', error);
                     }
@@ -122,9 +122,10 @@ export default function DemoPage() {
 
 
 
+
     return (
         <div className="flex flex-col items-center justify-center w-full h-full px-6 py-4">
-            <DataTable columns={columns} data={Users} setData={setUsers}/>
+            <DataTable columns={columns} data={users} setData={setUsers}/>
         </div>
     )
 }

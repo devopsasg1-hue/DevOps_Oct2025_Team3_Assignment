@@ -223,13 +223,13 @@ export function DataTable<TData, TValue>({columns, data,setData}: DataTableProps
             <CreateUserForm isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} setUsers={setData}/>
 
             <div className="bg-background flex-2/3 flex col overflow-hidden rounded-md border border-gray-300 shadow-sm">
-                <Table>
+                <Table className={undefined}>
                     <TableHeader className="sticky top-0 z-10 bg-background shadow-md">
                         {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id}>
+                            <TableRow key={headerGroup.id} className={undefined}>
                                 {headerGroup.headers.map((header) => {
                                     return (
-                                        <TableHead key={header.id}>
+                                        <TableHead key={header.id} className={undefined}>
                                             {header.isPlaceholder
                                                 ? null
                                                 : flexRender(
@@ -242,22 +242,21 @@ export function DataTable<TData, TValue>({columns, data,setData}: DataTableProps
                             </TableRow>
                         ))}
                     </TableHeader>
-                    <TableBody>
+                    <TableBody className={undefined}>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
                                 <TableRow
                                     key={row.id}
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
+                                    data-state={row.getIsSelected() && "selected"} className={undefined}                                >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>
+                                        <TableCell key={cell.id} className={undefined}>
                                             {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </TableCell>
                                     ))}
                                 </TableRow>
                             ))
                         ) : (
-                            <TableRow>
+                            <TableRow className={undefined}>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
                                     No results.
                                 </TableCell>
