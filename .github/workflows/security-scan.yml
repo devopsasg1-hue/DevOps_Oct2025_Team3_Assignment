@@ -28,7 +28,7 @@ jobs:
       - name: Run SCA for backend
         run: |
           npm audit --audit-level=high
-        working-directory: ./backend #added working-directory cus it kept failing the tests
+        working-directory: ./backend #added working-directory cus it kept failing the test
       
       # Secret Scanning
       - name: Secret Scanning
