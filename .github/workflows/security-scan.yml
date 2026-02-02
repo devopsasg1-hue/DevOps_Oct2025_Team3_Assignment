@@ -9,36 +9,151 @@ on:
 jobs:
   security-scan:
     runs-on: ubuntu-latest
-    
+
     steps:
       - uses: actions/checkout@v4
-      
-      # SAST
+
+      # ------------------------
+      # SAST (Semgrep)
+      # ------------------------
       - name: Run SAST (Semgrep)
         uses: returntocorp/semgrep-action@v1
         with:
           config: p/ci
-      
-      # SCA
-      - name: Run SCA (npm audit)
-        run: |
-          npm audit --audit-level=high
+
+      # ------------------------
+      # SCA (Frontend) - npm audit
+      # ------------------------
+      - name: Install frontend deps
         working-directory: ./frontend
-      
-      - name: Run SCA for backend
+        run: npm ci
+
+      - name: Run SCA (frontend npm audit)
+        id: sca-frontend
+        working-directory: ./frontend
         run: |
-          npm audit --audit-level=high
-        working-directory: ./backend #added working-directory cus it kept failing the test
-      
-      # Secret Scanning
+          npm audit --audit-level=high --json > audit-frontend.json || true
+
+          # npm audit output format differs sometimes; this covers common cases.
+          # If metadata exists, use it. Otherwise default to 0.
+          total=$(node -e "const r=require('./audit-frontend.json'); console.log((r.metadata?.vulnerabilities?.total) ?? 0)")
+          critical=$(node -e "const r=require('./audit-frontend.json'); console.log((r.metadata?.vulnerabilities?.critical) ?? 0)")
+          high=$(node -e "const r=require('./audit-frontend.json'); console.log((r.metadata?.vulnerabilities?.high) ?? 0)")
+
+          echo "total=$total" >> $GITHUB_OUTPUT
+          echo "critical=$critical" >> $GITHUB_OUTPUT
+          echo "high=$high" >> $GITHUB_OUTPUT
+
+          echo "Frontend audit -> total=$total critical=$critical high=$high"
+
+          if [ "$critical" -gt 0 ] || [ "$high" -gt 0 ]; then
+            echo "FRONTEND_AUDIT_FAILED=true" >> $GITHUB_ENV
+          else
+            echo "FRONTEND_AUDIT_FAILED=false" >> $GITHUB_ENV
+          fi
+
+      # ------------------------
+      # SCA (Backend) - npm audit
+      # ------------------------
+      - name: Install backend deps
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Run SCA (backend npm audit)
+        id: sca-backend
+        working-directory: ./backend
+        run: |
+          npm audit --audit-level=high --json > audit-backend.json || true
+
+          total=$(node -e "const r=require('./audit-backend.json'); console.log((r.metadata?.vulnerabilities?.total) ?? 0)")
+          critical=$(node -e "const r=require('./audit-backend.json'); console.log((r.metadata?.vulnerabilities?.critical) ?? 0)")
+          high=$(node -e "const r=require('./audit-backend.json'); console.log((r.metadata?.vulnerabilities?.high) ?? 0)")
+
+          echo "total=$total" >> $GITHUB_OUTPUT
+          echo "critical=$critical" >> $GITHUB_OUTPUT
+          echo "high=$high" >> $GITHUB_OUTPUT
+
+          echo "Backend audit -> total=$total critical=$critical high=$high"
+
+          if [ "$critical" -gt 0 ] || [ "$high" -gt 0 ]; then
+            echo "BACKEND_AUDIT_FAILED=true" >> $GITHUB_ENV
+          else
+            echo "BACKEND_AUDIT_FAILED=false" >> $GITHUB_ENV
+          fi
+
+      # ------------------------
+      # Secret Scanning (TruffleHog)
+      # Works for both PR and push
+      # ------------------------
       - name: Secret Scanning
         uses: trufflesecurity/trufflehog@main
         with:
           path: ./
-          base: ${{ github.event.pull_request.base.sha || 'HEAD~1' }}
-          head: HEAD
-      
-      # Frontend Dependency Check
-      - name: Check frontend vulnerabilities
-        if: github.event_name == 'pull_request' #this makes it run only on pull requests ah yall can change ltr
+          base: ${{ github.event.pull_request.base.sha || github.sha }}
+          head: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      # ------------------------
+      # Dependency Review (PR only)
+      # ------------------------
+      - name: Frontend Dependency Review
+        if: github.event_name == 'pull_request'
         uses: actions/dependency-review-action@v4
+
+      # ------------------------
+      # Email teachers (always sends)
+      # ------------------------
+      - name: Email teachers (success/failure)
+        if: always()
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          STATUS: ${{ job.status }}
+          WORKFLOW: ${{ github.workflow }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.ref_name }}
+          ACTOR: ${{ github.actor }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y msmtp msmtp-mta
+
+          cat > ~/.msmtprc <<EOF
+          defaults
+          auth on
+          tls on
+          tls_trust_file /etc/ssl/certs/ca-certificates.crt
+
+          account smtp
+          host $SMTP_HOST
+          port $SMTP_PORT
+          user $SMTP_USER
+          password $SMTP_PASS
+          from $EMAIL_FROM
+
+          account default : smtp
+          EOF
+
+          chmod 600 ~/.msmtprc
+
+          SUBJECT="[${STATUS^^}] ${WORKFLOW} - $REPO (${BRANCH})"
+          BODY="Hello,\n\nThis is an automated CI notification.\n\nWorkflow: $WORKFLOW\nRepository: $REPO\nBranch: $BRANCH\nTriggered by: $ACTOR\nStatus: $STATUS\n\nRun link: $RUN_URL\n\nFrontend audit failed: ${FRONTEND_AUDIT_FAILED:-unknown}\nBackend audit failed: ${BACKEND_AUDIT_FAILED:-unknown}\n\nRegards,\nDevOps Team"
+
+          printf "To: %s\nFrom: %s\nSubject: %s\n\n%s\n" \
+            "$EMAIL_TO" "$EMAIL_FROM" "$SUBJECT" "$BODY" | msmtp -t
+
+      # ------------------------
+      # Fail the workflow at the end if audit failed
+      # (ensures email still sends first)
+      # ------------------------
+      - name: Enforce security gate (fail if high/critical found)
+        if: always()
+        run: |
+          if [ "${FRONTEND_AUDIT_FAILED}" = "true" ] || [ "${BACKEND_AUDIT_FAILED}" = "true" ]; then
+            echo "❌ SECURITY GATE FAILED: High/Critical vulnerabilities detected"
+            exit 1
+          fi
+          echo "✅ Security gate passed"
