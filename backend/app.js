@@ -6,7 +6,7 @@ const authController = require("./controllers/authController");
 const { authenticateToken } = require("./middleware/authMiddleware");
 const fileRoutes = require("./routes/fileRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-const adminController = require("./controllers/adminController");
+// const adminController = require("./controllers/adminController");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,5 +28,5 @@ app.use("/admin", adminRoutes);
 
 //start server
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
