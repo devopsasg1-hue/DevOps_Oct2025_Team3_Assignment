@@ -36,6 +36,9 @@ jobs:
                   cache: npm
                   cache-dependency-path: ./backend/package-lock.json
             - run: npm ci
+            - name: Fix linting errors
+              run: npm run lint -- --fix
+            - name: Run lint check
             - run: npm run lint
 
     docker-build:
