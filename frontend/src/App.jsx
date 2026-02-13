@@ -5,9 +5,11 @@ import {
   Navigate,
 } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
-import Login from "./components/Login";
+import Login from "./pages/LoginPage.jsx";
 import Register from "./components/Register";
-import SimpleDashboard from "./components/SimpleDashboard";
+import AdminPage from "./pages/AdminPage";
+import Dashboard from "./pages/DashboardPage.jsx";
+import "./App.css";
 
 function App() {
   return (
@@ -17,7 +19,8 @@ function App() {
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<SimpleDashboard />} />
+          <Route path="/admin" element={<AdminPage/>} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </AuthProvider>
     </Router>

@@ -94,7 +94,7 @@ export const AuthProvider = ({ children }) => {
       setUser(user);
 
       console.log("Login successful:", user);
-      return { success: true };
+      return { success: true,isAdmin:user?.role === "admin" };
     } catch (error) {
       console.error("Login error:", error);
       console.error("Error response:", error.response?.data);
