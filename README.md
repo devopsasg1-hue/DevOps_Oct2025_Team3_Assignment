@@ -29,6 +29,8 @@ This is a full-stack DevSecOps authentication system with automated CI/CD pipeli
 - Tailwind CSS + Radix UI
 - React Router
 - Supabase client
+- Vitest + React Testing Library
+- Playwright (E2E testing)
 
 **Backend**
 - Node.js + Express
@@ -73,7 +75,7 @@ This is a full-stack DevSecOps authentication system with automated CI/CD pipeli
 - Created admin features (view/create/delete users)
 - Designed database schema (users and files tables)
 - Developed frontend auth pages (Login, Register, SimpleDashboard)
-- Wrote 39 unit tests (83% controller coverage, 90% middleware coverage)
+- Wrote 63 backend unit tests (83% controller coverage, 90% middleware coverage)
 - Created backend Dockerfile
 - Set up initial project structure
 
@@ -85,6 +87,7 @@ This is a full-stack DevSecOps authentication system with automated CI/CD pipeli
 
 **Charlotte:**
 - Configured deployment pipelines to Cloudflare Pages and Render
+- Set up frontend testing infrastructure (Vitest, Playwright)
 - Validated deployment processes
 - Performed end-to-end deployment testing
 - Ensured workflow reliability
@@ -110,7 +113,9 @@ DevOps_Oct2025_Team3_Assignment/
 │   ├── src/
 │   │   ├── components/           # Login, Register, Dashboard, Admin
 │   │   ├── contexts/             # AuthContext
+│   │   ├── tests/                # Unit tests (Vitest)
 │   │   └── App.jsx
+│   ├── e2e/                      # E2E tests (Playwright)
 │   ├── package.json
 │   └── Dockerfile
 │
@@ -125,6 +130,7 @@ DevOps_Oct2025_Team3_Assignment/
 │   ├── package.json
 │   └── Dockerfile
 │
+├── package.json                  # Root scripts (install:all, test, dev)
 └── README.md
 ```
 
@@ -147,7 +153,19 @@ git clone https://github.com/YOUR_ORG/DevOps_Oct2025_Team3_Assignment.git
 cd DevOps_Oct2025_Team3_Assignment
 ```
 
-Install dependencies:
+**Quick Start (from root directory):**
+```bash
+# Install all dependencies (frontend + backend)
+npm run install:all
+
+# Run all tests
+npm test
+
+# Start both frontend and backend
+npm run dev
+```
+
+**Or install individually:**
 ```bash
 # Frontend
 cd frontend
@@ -167,13 +185,14 @@ SUPABASE_ANON_KEY=your-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-service-key
 JWT_SECRET=your-jwt-secret
 PORT=3000
+NODE_ENV=development
 ```
 
 Create `frontend/.env`:
 ```
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
-VITE_API_URL=http://localhost:3000/api
+VITE_API_URL=http://localhost:3000
 ```
 
 ### Running Locally
@@ -238,11 +257,11 @@ Coverage report:
 npm run test:coverage
 ```
 
-**Test Coverage:**
-- 39 total tests
+**Backend Test Stats:**
+- 63 tests across 6 test suites
 - 83% controller coverage
 - 90% middleware coverage
-- 60% overall coverage
+- 65%+ overall coverage
 
 **Test Suites:**
 - `authController.test.js` - Authentication endpoints
@@ -254,10 +273,38 @@ npm run test:coverage
 
 ### Frontend Tests
 
+Run unit tests:
 ```bash
 cd frontend
 npm test
 ```
+
+Coverage report:
+```bash
+npm run test:coverage
+```
+
+Run E2E tests:
+```bash
+npm run test:e2e
+```
+
+**Frontend Test Stats:**
+- 17 unit tests across 3 test suites
+- Component tests: LoginPage, Header
+- Context tests: AuthContext
+- E2E tests: Authentication, Dashboard, Admin flows
+
+### Run All Tests
+
+From root directory:
+```bash
+npm test              # All unit tests
+npm run test:e2e      # E2E tests only
+npm run test:all      # Everything
+```
+
+**Total:** 80 tests (63 backend + 17 frontend)
 
 ---
 
@@ -268,7 +315,9 @@ npm test
 **build-client.yml** (runs on PR to main)
 1. Security checks - npm audit for vulnerabilities
 2. Build - install deps and build frontend
-3. Email notification with status
+3. Frontend unit tests with coverage
+4. E2E tests with Playwright
+5. Email notification with status
 
 **security-scan.yml** (runs on PR and push to main)
 1. SAST scanning with Semgrep
